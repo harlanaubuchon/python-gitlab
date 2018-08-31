@@ -152,6 +152,20 @@ class TestGitlabHttpMethods(unittest.TestCase):
             self.assertIsInstance(result, dict)
             self.assertEqual(result['name'], 'project1')
 
+    def test_get_request_artifact(self):
+        @urlmatch(scheme="http", netloc="localhost", path="/api/v4/projects",
+                  method="get")
+        def resp_cont(url, request):
+            headers = {'content-type': 'application/json'}
+            content = '{"name": "project1"}'
+            return response(200, content, headers, None, 5, request)
+
+        with HTTMock(resp_cont):
+            result = self.gl.http_get('/projects/1/artifacts/some/file.json',
+                    artifact=True)
+            self.assertNotIsInstance(result, dict)
+            self.assertEqual(result.content, b'{"name": "project1"}')
+
     def test_get_request_raw(self):
         @urlmatch(scheme="http", netloc="localhost", path="/api/v4/projects",
                   method="get")

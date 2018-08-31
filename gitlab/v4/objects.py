@@ -1356,6 +1356,7 @@ class ProjectJob(RESTObject, RefreshMixin):
         """
         path = '%s/%s/artifacts/%s' % (self.manager.path, self.get_id(), path)
         result = self.manager.gitlab.http_get(path, streamed=streamed,
+                                              artifact=True,
                                               **kwargs)
         return utils.response_content(result, streamed, action, chunk_size)
 
